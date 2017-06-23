@@ -8,25 +8,24 @@ import (
 const defaultHandler = "custom"
 
 func main() {
-	port, customHandler := parseFlags()
+	customHandler := parseFlags()
 
-	server := Server{port: port, customHandler: customHandler}
+	server := Server{customHandler: customHandler}
 
 	if err := server.Start(); err != nil {
 		panic(err)
 	}
 }
 
-func parseFlags() (int, string) {
-	port := flag.Int("port", 8080, "port to start redirect server on")
+func parseFlags() string {
 	customHandlerCLI := flag.String("handler", defaultHandler, "custom handler to redirect to")
 	flag.Parse()
 	customHandlerEnv := os.Getenv("REDIRECT_HANDLER")
 	if customHandlerEnv == "" {
-		return *port, *customHandlerCLI
+		return *customHandlerCLI
 	}
 	if *customHandlerCLI != defaultHandler {
-		return *port, *customHandlerCLI
+		return *customHandlerCLI
 	}
-	return *port, customHandlerEnv
+	return customHandlerEnv
 }
